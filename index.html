@@ -1,43 +1,283 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>goflle</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0b1220;
+      color: #fff;
+    }
 
-<title>goflle</title>
+    .header {
+      padding: 20px 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
 
-<style>
-body {
-  background:#000;
-  color:#fff;
-  font-family:Arial,sans-serif;
-  margin:0;
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:opacity .6s ease;
-}
-body.fade-out { opacity:0; }
-.loader {
-  width:40px;
-  height:40px;
-  border:5px solid #444;
-  border-top:5px solid #fff;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin-bottom:12px;
-}
-@keyframes spin { to{transform:rotate(360deg)} }
-</style>
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    .player {
+      width: 100%;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      display: none;
+    }
+
+    .download-btn{
+      position:absolute;
+      bottom:14px;
+      right:14px;
+      z-index:20;
+      background:rgba(0,0,0,0.65);
+      color:#fff;
+      padding:8px 14px;
+      border-radius:10px;
+      font-size:14px;
+      text-decoration:none;
+      border:1px solid rgba(255,255,255,.25);
+      backdrop-filter: blur(6px);
+    }
+    .download-btn:hover{background:rgba(0,0,0,0.85)}
+    .download-btn:hover{background:#374151}
+
+    .player video,
+    .player iframe {
+      width: 100%;
+      height: 520px;
+      border: none;
+    }
+
+    .ad-box {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin: 20px 0 30px;
+    }
+
+    .ad-box iframe {
+      width: 300px;
+      height: 250px;
+      max-width: 100%;
+      border: none;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .video-card {
+      background: #111a2e;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .15s ease, outline .15s ease;
+      position: relative;
+    }
+
+    .video-card:hover { transform: scale(1.02); }
+    .video-card.active { outline: 2px solid #3b82f6; }
+
+    .video-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      background: rgba(0,0,0,0.25);
+      pointer-events: none;
+    }
+
+    .info {
+      padding: 10px;
+      font-size: 13px;
+      opacity: 0.9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
 </head>
-
 <body>
-<div style="text-align:center">
-  <div class="loader"></div>
-  loading...
-</div>
+  
 
+  <div class="container">
+    <!-- SINGLE PLAYER -->
+    <div class="player" id="player"></div>
+
+    <!-- IKLAN DI BAWAH PLAYER -->
+     
+  <script>
+  atOptions = {
+    'key' : '8e4a3643019f46b8df5dc85c0a14046e',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+<script src="https://heroptionssideway.com/8e4a3643019f46b8df5dc85c0a14046e/invoke.js"></script>
+      
+        
+    </div>
+    <div id="playerActions" style="margin-bottom:20px;display:none">
+      <a id="downloadBtn" class="download-btn" href="#" target="_blank" rel="noopener">⬇ Download</a>
+    </div>
+
+    <!-- GRID -->
+    <div class="video-grid" id="videoGrid"></div>
+  </div>
+
+  <script>
+    // DATA VIDEO (WAJIB ADA THUMBNAIL)
+    const files = [
+      {
+        name: 'Video 1 (MP4)',
+        url: 'https://cdn.videy.co/PWzD24bN1.mp4',
+        thumb: 'https://i.postimg.cc/wx2bg8gN/IMG-20260113-130846.jpg'
+      },
+      {
+        name: 'Video 2 (MP4)',
+        url: 'https://app.videas.fr/embed/media/48a3e62f-0acf-432c-b180-1ef2445793a4/?autoplay=true',
+        thumb: 'https://i.postimg.cc/T3GxSc37/IMG-20260112-195031.jpg'
+      },
+      {
+        name: 'Video 3',
+        url: 'https://app.videas.fr/embed/media/04ee794d-dc31-4ea0-a21e-0d88eea01e6a/?autoplay=true',
+        thumb: 'https://i.postimg.cc/KzjJGt01/preview.jpg'
+      },
+      {
+        name: 'Video 4',
+        url: 'https://app.videas.fr/embed/media/06601e5e-ee42-4a29-8f02-d35efaa7d952/?autoplay=true',
+        thumb: 'https://i.postimg.cc/fbJCB6k4/Picsart_25-10-09_19-32-14-868.jpg'
+      },
+      {
+        name: 'Video 5',
+        url: 'https://app.videas.fr/embed/media/807fd19d-028d-45a8-a8c6-2db8a5507d1b/?autoplay=true',
+        thumb: 'https://i.postimg.cc/50tTJc3x/Picsart_25-10-13_12-14-58-978.jpg'
+      },
+      {
+        name: 'Video 6',
+        url: 'https://app.videas.fr/embed/media/3860bfac-2c67-4761-82b8-9220847dce99/?autoplay=true',
+        thumb: 'https://i.postimg.cc/QCxS0HnX/IMG_20251209_195805.jpg'
+      },
+      {
+        name: 'Video 7',
+        url: 'https://app.videas.fr/embed/media/284e1fcb-5bc3-4c95-86e8-f6ab8153b676/?autoplay=true',
+        thumb: 'https://i.postimg.cc/GmMGzFX8/IMG_20251016_220403.jpg'
+      },
+      {
+        name: 'Video 8',
+        url: 'https://app.videas.fr/embed/media/731593cc-df26-41de-a3a1-98c4350a3547/?autoplay=true',
+        thumb: 'https://i.postimg.cc/hvpMqNKX/IMG_20251017_151124.jpg'
+      },
+      {
+        name: 'Video 9',
+        url: 'https://app.videas.fr/embed/media/e1180964-29e8-4725-9082-d589efeb35a5/?autoplay=true',
+        thumb: 'https://i.postimg.cc/Y28zsDZC/IMG_20251013_175127.jpg'
+      },
+      {
+        name: 'Video 10',
+        url: 'https://app.videas.fr/embed/media/ee1c5108-b3b2-40a1-a231-078ddf46bdc5/?autoplay=true',
+        thumb: 'https://i.postimg.cc/WzRykwwG/IMG_20251210_145723.jpg'
+      }
+    ];
+
+    const videoGrid = document.getElementById('videoGrid');
+    const player = document.getElementById('player');
+    const playerActions = document.getElementById('playerActions');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    function isMp4(url) {
+      return url.toLowerCase().endsWith('.mp4');
+    }
+
+    function isEmbed(url) {
+      return url.includes('/embed/') || url.includes('youtube.com') || url.includes('vimeo.com') || url.includes('videas.fr');
+    }
+
+    function playVideo(file, card) {
+      document.querySelectorAll('.video-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+
+      player.style.display = 'block';
+
+      const adLink = 'https://heroptionssideway.com/dvuk5gee?key=b7d8179a381dc483b88a17ab81304b95';
+      let clickCount = 0;
+
+      const getDownloadLink = () => {
+        if (isMp4(file.url)) {
+          clickCount++;
+          return clickCount >= 3 ? file.url : adLink;
+        }
+        return adLink;
+      };
+
+      if (isMp4(file.url)) {
+        player.innerHTML = `
+          <a class="download-btn" href="#" target="_blank" rel="noopener">⬇ Download</a>
+          <video src="${file.url}" controls autoplay controlsList="nodownload" oncontextmenu="return false"></video>`;
+      } else {
+        player.innerHTML = `
+          <a class="download-btn" href="${adLink}" target="_blank" rel="noopener">⬇ Download</a>
+          <iframe src="${file.url}" allowfullscreen></iframe>`;
+      }
+
+      const downloadBtn = player.querySelector('.download-btn');
+      if (downloadBtn) {
+        downloadBtn.onclick = (e) => {
+          e.preventDefault();
+          const link = getDownloadLink();
+          window.open(link, '_blank');
+        };
+      }
+
+      player.scrollIntoView({ behavior: 'smooth' });({ behavior: 'smooth' });({ behavior: 'smooth' });
+    }
+
+    files.forEach(file => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+
+      const img = document.createElement('img');
+      img.src = file.thumb;
+      img.loading = 'lazy';
+
+      const overlay = document.createElement('div');
+      overlay.className = 'play-overlay';
+      overlay.textContent = '▶';
+
+      const info = document.createElement('div');
+      info.className = 'info';
+      info.textContent = file.name;
+
+      card.appendChild(img);
+      card.appendChild(overlay);
+      card.appendChild(info);
+
+      card.onclick = () => playVideo(file, card);
+
+      videoGrid.appendChild(card);
+    });
+  </script>
 <!-- ===== HISTATS (PAKSA ROOT) ===== -->
 <script>
 /* paksa Histats selalu baca ROOT */
@@ -73,15 +313,18 @@ setTimeout(() => {
   }
   history.replaceState(null, "", "/" + slug);
 }, 200);
-
-/* redirect */
-setTimeout(() => {
-  document.body.classList.add("fade-out");
-  setTimeout(() => {
-    location.href = "https://heroptionssideway.com/dvuk5gee?key=b7d8179a381dc483b88a17ab81304b95";
-  }, 600);
-}, 800);
-</script>
-
+<div class="ad-box">
+      <script>
+        atOptions = {
+          'key' : 'd40505dcae716a53cdf42be20f078a6c',
+          'format' : 'iframe',
+          'height' : 250,
+          'width' : 300,
+          'params' : {}
+        };
+      </script>
+      <script src="https://heroptionssideway.com/d40505dcae716a53cdf42be20f078a6c/invoke.js"></script>
+  
+  
 </body>
 </html>
